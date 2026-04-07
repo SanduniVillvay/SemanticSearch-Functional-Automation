@@ -1,0 +1,34 @@
+{
+  "uuid": "1fb03e3559c049918881d2f77093f467",
+  "historyId": "dd49f16fe4db5a1921b97c480c58fbf1",
+  "name": "What types of cabinet openers do you have?",
+  "fullName": "semantic_query_automation.query_23",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524170,
+  "stop": 1775594524171,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "What types of cabinet openers do you have?"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "10.06"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "10.06"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "uuid": "c2b78f35a45946699be9096a606e2e11",
+  "historyId": "aceb7ba49b3448ac90f9dd7c138dc1e2",
+  "name": "wearable face protections",
+  "fullName": "semantic_query_automation.query_8",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524155,
+  "stop": 1775594524156,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "wearable face protections"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "80.00"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "60.00"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

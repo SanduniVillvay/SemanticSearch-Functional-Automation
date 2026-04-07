@@ -1,0 +1,34 @@
+{
+  "uuid": "4a09251a469945cba29392b086c85427",
+  "historyId": "27cd4d06012e0e29193ae9393184f74f",
+  "name": "liquor Racks",
+  "fullName": "semantic_query_automation.query_10",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524157,
+  "stop": 1775594524158,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "liquor Racks"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "0.00"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "0.00"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

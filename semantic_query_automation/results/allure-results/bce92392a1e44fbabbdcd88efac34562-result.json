@@ -1,0 +1,34 @@
+{
+  "uuid": "bce92392a1e44fbabbdcd88efac34562",
+  "historyId": "713a891ed0bfd2c87ba000152139abe8",
+  "name": "Do you have used clothes for wiping dust?",
+  "fullName": "semantic_query_automation.query_19",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524166,
+  "stop": 1775594524167,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "Do you have used clothes for wiping dust?"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "61.01"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "61.01"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

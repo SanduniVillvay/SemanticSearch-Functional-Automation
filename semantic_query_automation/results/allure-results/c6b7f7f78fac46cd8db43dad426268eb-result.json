@@ -1,0 +1,34 @@
+{
+  "uuid": "c6b7f7f78fac46cd8db43dad426268eb",
+  "historyId": "41873ed549d76edd8ab2c68c5d142dc3",
+  "name": "dust wiping bulk options",
+  "fullName": "semantic_query_automation.query_20",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524167,
+  "stop": 1775594524168,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "dust wiping bulk options"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "69.19"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "69.19"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

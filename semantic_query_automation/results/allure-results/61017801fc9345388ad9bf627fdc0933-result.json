@@ -1,0 +1,34 @@
+{
+  "uuid": "61017801fc9345388ad9bf627fdc0933",
+  "historyId": "a1a3d980913a2244bfe66934c7af2603",
+  "name": "kitchen taps",
+  "fullName": "semantic_query_automation.query_14",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524161,
+  "stop": 1775594524162,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "kitchen taps"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "18.36"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "18.31"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

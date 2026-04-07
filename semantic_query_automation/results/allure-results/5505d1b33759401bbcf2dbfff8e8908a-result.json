@@ -1,0 +1,34 @@
+{
+  "uuid": "5505d1b33759401bbcf2dbfff8e8908a",
+  "historyId": "4ac118306d62abd13ced989599cca3a8",
+  "name": "rubbish containers",
+  "fullName": "semantic_query_automation.query_9",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524156,
+  "stop": 1775594524157,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "rubbish containers"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "10.65"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "10.70"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

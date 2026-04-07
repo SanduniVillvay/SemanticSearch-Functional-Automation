@@ -1,0 +1,34 @@
+{
+  "uuid": "85b144bfff7c47eb8363af4b3fad75cb",
+  "historyId": "134e1a93ac68be55a7caf27ba5d421de",
+  "name": "classical metal items",
+  "fullName": "semantic_query_automation.query_6",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524153,
+  "stop": 1775594524154,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "classical metal items"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "19.39"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "22.62"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "uuid": "69dce706f47f41e19e55a049815c99b2",
+  "historyId": "903046ed095ed70f3e4e60ca17a0d67c",
+  "name": "Cabide calça",
+  "fullName": "semantic_query_automation.query_34",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524181,
+  "stop": 1775594524182,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "Cabide calça"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "43.12"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "43.12"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

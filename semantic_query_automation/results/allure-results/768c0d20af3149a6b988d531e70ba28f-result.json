@@ -1,0 +1,34 @@
+{
+  "uuid": "768c0d20af3149a6b988d531e70ba28f",
+  "historyId": "249fd6b361d8670c20530fb51cd6ffd6",
+  "name": "wooden engravings",
+  "fullName": "semantic_query_automation.query_4",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524151,
+  "stop": 1775594524152,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "wooden engravings"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "1.69"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "1.69"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

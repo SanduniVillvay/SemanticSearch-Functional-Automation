@@ -1,0 +1,34 @@
+{
+  "uuid": "17318d0fc8f6465eb6ba02daf8799f9f",
+  "historyId": "1abaff16dd65baf3262847f5f764b9d9",
+  "name": "wooden floor panels",
+  "fullName": "semantic_query_automation.query_13",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524160,
+  "stop": 1775594524161,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "wooden floor panels"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "11.68"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "11.68"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

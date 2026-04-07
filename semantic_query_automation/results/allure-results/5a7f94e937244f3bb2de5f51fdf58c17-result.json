@@ -1,0 +1,34 @@
+{
+  "uuid": "5a7f94e937244f3bb2de5f51fdf58c17",
+  "historyId": "94062079de56b8c766d39b811086e42b",
+  "name": "something to protect items from dust",
+  "fullName": "semantic_query_automation.query_33",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524180,
+  "stop": 1775594524181,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "something to protect items from dust"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "76.70"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "71.17"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "uuid": "84534ba9c4b349968a596d449f72416a",
+  "historyId": "637c5dc54583ecd519a6c4e091815a02",
+  "name": "cabinet and furniture damage protectors",
+  "fullName": "semantic_query_automation.query_30",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524177,
+  "stop": 1775594524178,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "cabinet and furniture damage protectors"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "19.17"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "20.35"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

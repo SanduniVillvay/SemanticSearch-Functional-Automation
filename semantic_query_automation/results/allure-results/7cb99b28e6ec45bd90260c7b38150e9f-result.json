@@ -1,0 +1,34 @@
+{
+  "uuid": "7cb99b28e6ec45bd90260c7b38150e9f",
+  "historyId": "fbdd542d78cefb34230280a9834a3c9f",
+  "name": "bathroom taps",
+  "fullName": "semantic_query_automation.query_15",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524162,
+  "stop": 1775594524163,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "bathroom taps"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "31.34"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "31.34"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

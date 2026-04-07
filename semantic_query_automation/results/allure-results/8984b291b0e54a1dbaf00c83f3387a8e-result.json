@@ -1,0 +1,34 @@
+{
+  "uuid": "8984b291b0e54a1dbaf00c83f3387a8e",
+  "historyId": "057cc2ed407676a6dd2aefec79a84471",
+  "name": "wheels for office chairs",
+  "fullName": "semantic_query_automation.query_3",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524150,
+  "stop": 1775594524151,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "wheels for office chairs"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "5.61"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "5.61"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

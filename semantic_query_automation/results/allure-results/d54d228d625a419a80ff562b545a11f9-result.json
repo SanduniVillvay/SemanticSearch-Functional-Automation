@@ -1,0 +1,34 @@
+{
+  "uuid": "d54d228d625a419a80ff562b545a11f9",
+  "historyId": "d70e89eb8ce8eee2c756480b83408e51",
+  "name": "Solid surface kitchen sinks",
+  "fullName": "semantic_query_automation.query_40",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524187,
+  "stop": 1775594524188,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "Solid surface kitchen sinks"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "0.24"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "0.24"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

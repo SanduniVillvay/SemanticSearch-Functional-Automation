@@ -1,0 +1,34 @@
+{
+  "uuid": "e936b9cd4a2845f7bb780767b2133395",
+  "historyId": "3fac4da23dd93f5d282063d59bf201a5",
+  "name": "What types of sanding options do we have?",
+  "fullName": "semantic_query_automation.query_21",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524168,
+  "stop": 1775594524169,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "What types of sanding options do we have?"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "10.40"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "10.36"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "uuid": "a7425fb3f0b7458687b5a294fa6ee527",
+  "historyId": "f7170550c240d2b0fc1ce545184fc134",
+  "name": "corion sinks",
+  "fullName": "semantic_query_automation.query_35",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524182,
+  "stop": 1775594524183,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "corion sinks"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "19.90"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "19.74"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

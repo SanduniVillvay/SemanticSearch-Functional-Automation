@@ -1,0 +1,34 @@
+{
+  "uuid": "d7cddacd297c44499c7aebd7307b672e",
+  "historyId": "b122fba833e979a637fd858ca3aec5b7",
+  "name": "fruits and vegetable related items",
+  "fullName": "semantic_query_automation.query_32",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524179,
+  "stop": 1775594524180,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "fruits and vegetable related items"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "45.00"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "0.24"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

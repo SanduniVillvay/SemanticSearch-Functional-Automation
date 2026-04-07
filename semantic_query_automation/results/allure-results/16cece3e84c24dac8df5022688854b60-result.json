@@ -1,0 +1,34 @@
+{
+  "uuid": "16cece3e84c24dac8df5022688854b60",
+  "historyId": "ee5bc8e754c4ea7d1038a4293b30cfb0",
+  "name": "metal engravings",
+  "fullName": "semantic_query_automation.query_5",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524152,
+  "stop": 1775594524153,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "metal engravings"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "28.30"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "28.30"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

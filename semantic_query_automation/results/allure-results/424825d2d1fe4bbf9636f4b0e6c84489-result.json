@@ -1,0 +1,34 @@
+{
+  "uuid": "424825d2d1fe4bbf9636f4b0e6c84489",
+  "historyId": "869f03ccf02bc491168381317c7d090c",
+  "name": "portable table stands",
+  "fullName": "semantic_query_automation.query_28",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524175,
+  "stop": 1775594524176,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "portable table stands"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "20.09"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "20.09"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

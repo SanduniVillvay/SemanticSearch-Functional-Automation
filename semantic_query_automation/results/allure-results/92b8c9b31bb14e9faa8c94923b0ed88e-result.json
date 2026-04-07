@@ -1,0 +1,34 @@
+{
+  "uuid": "92b8c9b31bb14e9faa8c94923b0ed88e",
+  "historyId": "1b9f105a59384dbe597ff04d67eb8566",
+  "name": "decorative table stands",
+  "fullName": "semantic_query_automation.query_27",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524174,
+  "stop": 1775594524175,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "decorative table stands"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "9.64"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "9.32"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

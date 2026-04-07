@@ -1,0 +1,34 @@
+{
+  "uuid": "fa212513215e48e7999097399ced91ac",
+  "historyId": "f665057fe0742125a805ea762c2d8bca",
+  "name": "beverages",
+  "fullName": "semantic_query_automation.query_11",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524158,
+  "stop": 1775594524159,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "beverages"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "95.00"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "86.36"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

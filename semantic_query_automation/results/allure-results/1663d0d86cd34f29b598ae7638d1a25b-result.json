@@ -1,0 +1,34 @@
+{
+  "uuid": "1663d0d86cd34f29b598ae7638d1a25b",
+  "historyId": "26e13ead7374203b1bc59de3e736acce",
+  "name": "Non-conductive fasteners for electrical panels",
+  "fullName": "semantic_query_automation.query_36",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524183,
+  "stop": 1775594524184,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "Non-conductive fasteners for electrical panels"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "64.10"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "64.10"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

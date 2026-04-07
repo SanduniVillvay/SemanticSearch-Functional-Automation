@@ -1,0 +1,34 @@
+{
+  "uuid": "c1f526bfc15f406c9e889a96001b4352",
+  "historyId": "7b109dc3f763d2b2c5898b1d4d714005",
+  "name": "hidden door hinges for cabinets (hardware for a secret bookshelf door)",
+  "fullName": "semantic_query_automation.query_39",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524186,
+  "stop": 1775594524187,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "hidden door hinges for cabinets (hardware for a secret bookshelf door)"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "68.43"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "68.43"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

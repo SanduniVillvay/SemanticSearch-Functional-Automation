@@ -1,0 +1,34 @@
+{
+  "uuid": "741c0a6324c24152a081d77d5a34e160",
+  "historyId": "c1ee5c808c5068ce99f6722a2b3ca423",
+  "name": "Show me grass cutting blade types",
+  "fullName": "semantic_query_automation.query_22",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524169,
+  "stop": 1775594524170,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "Show me grass cutting blade types"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "24.38"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "24.18"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

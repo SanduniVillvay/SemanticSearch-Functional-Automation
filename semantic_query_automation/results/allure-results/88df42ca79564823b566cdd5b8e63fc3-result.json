@@ -1,0 +1,34 @@
+{
+  "uuid": "88df42ca79564823b566cdd5b8e63fc3",
+  "historyId": "25511c0140dadedea31f65cefb0a86ab",
+  "name": "space saving table stands",
+  "fullName": "semantic_query_automation.query_29",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524176,
+  "stop": 1775594524177,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "space saving table stands"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "14.59"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "14.50"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

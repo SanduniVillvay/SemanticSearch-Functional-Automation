@@ -1,0 +1,34 @@
+{
+  "uuid": "25fc660470294efd9ee31889166fe210",
+  "historyId": "6a767ade879d0a116744a213327834dc",
+  "name": "Rust proof slides for a coastal outdoor kitchen",
+  "fullName": "semantic_query_automation.query_38",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524185,
+  "stop": 1775594524186,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "Rust proof slides for a coastal outdoor kitchen"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "11.00"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "11.00"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

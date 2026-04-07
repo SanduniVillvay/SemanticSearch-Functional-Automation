@@ -1,0 +1,34 @@
+{
+  "uuid": "c0ac558544dc46259aabf12b973c571e",
+  "historyId": "ae85b2deb2e4fc30ee325974cec85602",
+  "name": "High-strength bonding for heavy vibrating machinery",
+  "fullName": "semantic_query_automation.query_37",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524184,
+  "stop": 1775594524185,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "High-strength bonding for heavy vibrating machinery"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "59.66"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "59.86"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}

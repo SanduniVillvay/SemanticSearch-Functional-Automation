@@ -1,0 +1,34 @@
+{
+  "uuid": "ec8cb20a4c4f402ca2a2257fe274809c",
+  "historyId": "5ef561293ba6442d79a113281a320db6",
+  "name": "what types of screw headers do you have?",
+  "fullName": "semantic_query_automation.query_18",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1775594524165,
+  "stop": 1775594524166,
+  "parameters": [
+    {
+      "name": "query_name",
+      "value": "what types of screw headers do you have?"
+    },
+    {
+      "name": "precision_percentage",
+      "value": "5.61"
+    },
+    {
+      "name": "recall_percentage",
+      "value": "5.61"
+    }
+  ],
+  "labels": [
+    {
+      "name": "suite",
+      "value": "Semantic Query Automation"
+    },
+    {
+      "name": "subSuite",
+      "value": "Query Precision and Recall"
+    }
+  ]
+}
