@@ -8,8 +8,7 @@ import os
 import time
 import urllib.parse
 import urllib.request
-import uuid
-from hashlib import md5
+from html import escape
 from pathlib import Path
 
 BASE_URL = os.environ.get(
@@ -19,7 +18,7 @@ BASE_URL = os.environ.get(
 IN_PATH = Path(__file__).resolve().parent / "benchmark_final.json"
 OUT_PATH = Path(__file__).resolve().parent / "benchmark_final_actual_results.json"
 RESULTS_DIR = Path(__file__).resolve().parent / "results"
-ALLURE_RESULTS_DIR = RESULTS_DIR / "allure-results"
+GRAPH_REPORT_PATH = RESULTS_DIR / "precision_recall_issue_report.html"
 
 PAGE_SIZE = int(os.environ.get("PAGE_SIZE", "24"))
 MAX_PAGES_PER_QUERY = int(os.environ.get("MAX_PAGES_PER_QUERY", "200"))
@@ -162,48 +161,100 @@ def compute_benchmark_missing(
     return len(missing), missing
 
 
-def write_allure_results(rows: list[dict]) -> None:
-    """Write per-query precision/recall into Allure result files."""
-    ALLURE_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    for old_file in ALLURE_RESULTS_DIR.glob("*-result.json"):
-        old_file.unlink()
+def write_graphical_report(rows: list[dict]) -> None:
+    """Write a simple graphical HTML report for precision and recall issues."""
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    base_ts = int(time.time() * 1000)
-    for idx, row in enumerate(rows):
-        query_name = str(row.get("query") or "").strip()
-        query_id = row.get("query_id")
+    body_rows: list[str] = []
+    for row in rows:
+        query = escape(str(row.get("query") or ""))
         precision = float(row.get("precision_percentage") or 0.0)
-        recall = float(row.get("recall_percentage") or 0.0)
-        err = str(row.get("error") or "").strip()
-
-        result_uuid = uuid.uuid4().hex
-        history_id = md5(f"{query_id}|{query_name}".encode("utf-8")).hexdigest()
-        result_payload = {
-            "uuid": result_uuid,
-            "historyId": history_id,
-            "name": query_name or f"query_{query_id}",
-            "fullName": f"semantic_query_automation.query_{query_id}",
-            "status": "broken" if err else "passed",
-            "stage": "finished",
-            "start": base_ts + idx,
-            "stop": base_ts + idx + 1,
-            "parameters": [
-                {"name": "query_name", "value": query_name},
-                {"name": "precision_percentage", "value": f"{precision:.2f}"},
-                {"name": "recall_percentage", "value": f"{recall:.2f}"},
-            ],
-            "labels": [
-                {"name": "suite", "value": "Semantic Query Automation"},
-                {"name": "subSuite", "value": "Query Precision and Recall"},
-            ],
-        }
-        if err:
-            result_payload["statusDetails"] = {"message": err}
-
-        out_file = ALLURE_RESULTS_DIR / f"{result_uuid}-result.json"
-        out_file.write_text(
-            json.dumps(result_payload, ensure_ascii=False, indent=2), encoding="utf-8"
+        recall_issue = float(row.get("recall_issue_percentage") or 0.0)
+        body_rows.append(
+            "<tr>"
+            f"<td>{query}</td>"
+            f"<td>{precision:.2f}%</td>"
+            "<td><div class='bar-wrap'><div class='bar precision' "
+            f"style='width:{precision:.2f}%'></div></div></td>"
+            f"<td>{recall_issue:.2f}%</td>"
+            "<td><div class='bar-wrap'><div class='bar recall-issue' "
+            f"style='width:{recall_issue:.2f}%'></div></div></td>"
+            "</tr>"
         )
+
+    html = f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Precision vs Recall Issue by Query</title>
+  <style>
+    body {{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 20px;
+      background: #f8fafc;
+      color: #0f172a;
+    }}
+    h1 {{ margin: 0 0 14px 0; font-size: 24px; }}
+    p {{ margin: 0 0 16px 0; color: #334155; }}
+    .card {{
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px;
+      overflow-x: auto;
+    }}
+    table {{
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+    }}
+    th, td {{
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+      padding: 10px 8px;
+      font-size: 13px;
+      vertical-align: middle;
+    }}
+    th {{ background: #f1f5f9; position: sticky; top: 0; }}
+    .bar-wrap {{
+      width: 220px;
+      height: 10px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }}
+    .bar {{
+      height: 100%;
+      border-radius: 999px;
+    }}
+    .precision {{ background: #0ea5e9; }}
+    .recall-issue {{ background: #f97316; }}
+  </style>
+</head>
+<body>
+  <h1>Query-wise Precision and Recall Issue</h1>
+  <p>Generated automatically from benchmark run output.</p>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Query Name</th>
+          <th>Precision %</th>
+          <th>Precision Graph</th>
+          <th>Recall Issue %</th>
+          <th>Recall Issue Graph</th>
+        </tr>
+      </thead>
+      <tbody>
+        {"".join(body_rows)}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
+"""
+    GRAPH_REPORT_PATH.write_text(html, encoding="utf-8")
 
 
 def main() -> None:
@@ -236,6 +287,7 @@ def main() -> None:
             )
             precision_pct = percentage(match_count, len(actual_results))
             recall_pct = percentage(match_count, len(benchmark_results))
+            recall_issue_pct = percentage(missing_count, len(benchmark_results))
             out_rows.append(
                 {
                     "query_id": query_id,
@@ -249,6 +301,7 @@ def main() -> None:
                     "benchmark_missing_results(Recall_issue)": missing_results,
                     "precision_percentage": precision_pct,
                     "recall_percentage": recall_pct,
+                    "recall_issue_percentage": recall_issue_pct,
                     "api_stats": stats,
                     "error": "",
                 }
@@ -267,6 +320,7 @@ def main() -> None:
                     "benchmark_missing_results(Recall_issue)": [],
                     "precision_percentage": 0.0,
                     "recall_percentage": 0.0,
+                    "recall_issue_percentage": 0.0,
                     "api_stats": {},
                     "error": str(e),
                 }
@@ -280,8 +334,8 @@ def main() -> None:
     }
     OUT_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Saved: {OUT_PATH}", flush=True)
-    write_allure_results(out_rows)
-    print(f"Saved Allure results: {ALLURE_RESULTS_DIR}", flush=True)
+    write_graphical_report(out_rows)
+    print(f"Saved graphical report: {GRAPH_REPORT_PATH}", flush=True)
 
 
 if __name__ == "__main__":
