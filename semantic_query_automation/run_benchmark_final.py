@@ -8,6 +8,8 @@ import os
 import time
 import urllib.parse
 import urllib.request
+import uuid
+from hashlib import md5
 from pathlib import Path
 
 BASE_URL = os.environ.get(
@@ -16,6 +18,8 @@ BASE_URL = os.environ.get(
 )
 IN_PATH = Path(__file__).resolve().parent / "benchmark_final.json"
 OUT_PATH = Path(__file__).resolve().parent / "benchmark_final_actual_results.json"
+RESULTS_DIR = Path(__file__).resolve().parent / "results"
+ALLURE_RESULTS_DIR = RESULTS_DIR / "allure-results"
 
 PAGE_SIZE = int(os.environ.get("PAGE_SIZE", "24"))
 MAX_PAGES_PER_QUERY = int(os.environ.get("MAX_PAGES_PER_QUERY", "200"))
@@ -23,6 +27,12 @@ REQUEST_TIMEOUT_S = int(os.environ.get("REQUEST_TIMEOUT_S", "60"))
 MAX_RETRIES = int(os.environ.get("MAX_RETRIES", "3"))
 RETRY_BACKOFF_S = float(os.environ.get("RETRY_BACKOFF_S", "1.5"))
 PAGE_DELAY_S = float(os.environ.get("PAGE_DELAY_S", "0.12"))
+
+
+def percentage(numerator: int, denominator: int) -> float:
+    if denominator <= 0:
+        return 0.0
+    return round((numerator / denominator) * 100, 2)
 
 
 def extract_titles(payload: dict) -> list[str]:
@@ -108,6 +118,94 @@ def run_one_query(query: str) -> tuple[list[str], dict]:
     }
 
 
+def compute_benchmark_intersection(
+    benchmark_results: list[str], actual_results: list[str]
+) -> tuple[int, list[str]]:
+    """Return common benchmark titles found in actual results."""
+    actual_norm = {
+        str(title).strip().lower()
+        for title in actual_results
+        if str(title).strip()
+    }
+
+    matches: list[str] = []
+    seen: set[str] = set()
+    for title in benchmark_results:
+        cleaned = str(title).strip()
+        norm = cleaned.lower()
+        if cleaned and norm in actual_norm and norm not in seen:
+            matches.append(cleaned)
+            seen.add(norm)
+
+    return len(matches), matches
+
+
+def compute_benchmark_missing(
+    benchmark_results: list[str], actual_results: list[str]
+) -> tuple[int, list[str]]:
+    """Return benchmark titles that were not found in actual results."""
+    actual_norm = {
+        str(title).strip().lower()
+        for title in actual_results
+        if str(title).strip()
+    }
+
+    missing: list[str] = []
+    seen: set[str] = set()
+    for title in benchmark_results:
+        cleaned = str(title).strip()
+        norm = cleaned.lower()
+        if cleaned and norm not in actual_norm and norm not in seen:
+            missing.append(cleaned)
+            seen.add(norm)
+
+    return len(missing), missing
+
+
+def write_allure_results(rows: list[dict]) -> None:
+    """Write per-query precision/recall into Allure result files."""
+    ALLURE_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    for old_file in ALLURE_RESULTS_DIR.glob("*-result.json"):
+        old_file.unlink()
+
+    base_ts = int(time.time() * 1000)
+    for idx, row in enumerate(rows):
+        query_name = str(row.get("query") or "").strip()
+        query_id = row.get("query_id")
+        precision = float(row.get("precision_percentage") or 0.0)
+        recall = float(row.get("recall_percentage") or 0.0)
+        err = str(row.get("error") or "").strip()
+
+        result_uuid = uuid.uuid4().hex
+        history_id = md5(f"{query_id}|{query_name}".encode("utf-8")).hexdigest()
+        result_payload = {
+            "uuid": result_uuid,
+            "historyId": history_id,
+            "name": query_name or f"query_{query_id}",
+            "fullName": f"semantic_query_automation.query_{query_id}",
+            "status": "broken" if err else "passed",
+            "stage": "finished",
+            "start": base_ts + idx,
+            "stop": base_ts + idx + 1,
+            "parameters": [
+                {"name": "query_name", "value": query_name},
+                {"name": "precision_percentage", "value": f"{precision:.2f}"},
+                {"name": "recall_percentage", "value": f"{recall:.2f}"},
+            ],
+            "labels": [
+                {"name": "suite", "value": "Semantic Query Automation"},
+                {"name": "subSuite", "value": "Query Precision and Recall"},
+            ],
+        }
+        if err:
+            result_payload["statusDetails"] = {"message": err}
+
+        out_file = ALLURE_RESULTS_DIR / f"{result_uuid}-result.json"
+        out_file.write_text(
+            json.dumps(result_payload, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+
+
 def main() -> None:
     if not IN_PATH.exists():
         raise SystemExit(f"Missing input file: {IN_PATH}")
@@ -130,6 +228,14 @@ def main() -> None:
 
         try:
             actual_results, stats = run_one_query(query)
+            match_count, match_results = compute_benchmark_intersection(
+                benchmark_results, actual_results
+            )
+            missing_count, missing_results = compute_benchmark_missing(
+                benchmark_results, actual_results
+            )
+            precision_pct = percentage(match_count, len(actual_results))
+            recall_pct = percentage(match_count, len(benchmark_results))
             out_rows.append(
                 {
                     "query_id": query_id,
@@ -137,6 +243,12 @@ def main() -> None:
                     "number_of_results": number_of_results,
                     "benchmark_results": benchmark_results,
                     "actual_results": actual_results,
+                    "benchmark_matching_count(Precision)": match_count,
+                    "benchmark_matching_results(Precision)": match_results,
+                    "benchmark_missing_count(Recall_Issue)": missing_count,
+                    "benchmark_missing_results(Recall_issue)": missing_results,
+                    "precision_percentage": precision_pct,
+                    "recall_percentage": recall_pct,
                     "api_stats": stats,
                     "error": "",
                 }
@@ -149,6 +261,12 @@ def main() -> None:
                     "number_of_results": number_of_results,
                     "benchmark_results": benchmark_results,
                     "actual_results": [],
+                    "benchmark_matching_count(Precision)": 0,
+                    "benchmark_matching_results(Precision)": [],
+                    "benchmark_missing_count(Recall_Issue)": 0,
+                    "benchmark_missing_results(Recall_issue)": [],
+                    "precision_percentage": 0.0,
+                    "recall_percentage": 0.0,
                     "api_stats": {},
                     "error": str(e),
                 }
@@ -162,6 +280,8 @@ def main() -> None:
     }
     OUT_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Saved: {OUT_PATH}", flush=True)
+    write_allure_results(out_rows)
+    print(f"Saved Allure results: {ALLURE_RESULTS_DIR}", flush=True)
 
 
 if __name__ == "__main__":
