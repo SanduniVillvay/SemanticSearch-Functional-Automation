@@ -1,0 +1,47 @@
+name: Semantic Query Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      trial_no:
+        description: "Trial label (e.g., T1, T2)"
+        required: true
+        default: "T1"
+  push:
+    branches: [ "SemanticSearchV1" ]
+
+jobs:
+  run-automation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    env:
+      BASE_URL: ${{ secrets.BASE_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate input JSON
+        run: python -m json.tool semantic_query_automation/benchmark_final.json > /dev/null
+
+      - name: Run automation
+        run: python semantic_query_automation/run_benchmark_final.py
+
+      - name: Save output into results folder with trial name
+        run: |
+          mkdir -p semantic_query_automation/results
+          mv semantic_query_automation/benchmark_final_actual_results.json semantic_query_automation/results/benchmark_final_actual_results${{ github.event.inputs.trial_no || 'T1' }}.json
+
+      - name: Upload result artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semantic-query-results-${{ github.run_number }}
+          path: semantic_query_automation/results/*.json
+          if-no-files-found: error
