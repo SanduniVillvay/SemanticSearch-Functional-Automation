@@ -1,8 +1,16 @@
-name: Semantic Query Automation
+name: Query Automation Runner
 
 on:
   workflow_dispatch:
     inputs:
+      automation_type:
+        description: "Choose automation to run"
+        required: true
+        default: "semantic_query"
+        type: choice
+        options:
+          - semantic_query
+          - synonym_query
       trial_no:
         description: "Trial label (e.g., T1, T2)"
         required: true
@@ -17,6 +25,8 @@ jobs:
 
     env:
       BASE_URL: ${{ secrets.BASE_URL }}
+      AUTOMATION_TYPE: ${{ github.event.inputs.automation_type || 'semantic_query' }}
+      TRIAL_NO: ${{ github.event.inputs.trial_no || 'T1' }}
 
     steps:
       - name: Checkout
@@ -27,21 +37,51 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Validate input JSON
+      - name: Validate semantic query input JSON
+        if: env.AUTOMATION_TYPE == 'semantic_query'
         run: python -m json.tool semantic_query_automation/benchmark_final.json > /dev/null
 
-      - name: Run automation
+      - name: Validate synonym query input JSON
+        if: env.AUTOMATION_TYPE == 'synonym_query'
+        run: python -m json.tool synonyms_query_automation/synonyms.json > /dev/null
+
+      - name: Run semantic query automation
+        if: env.AUTOMATION_TYPE == 'semantic_query'
         run: python semantic_query_automation/run_benchmark_final.py
 
-      - name: Save output into results folder with trial name
+      - name: Run synonym query automation
+        if: env.AUTOMATION_TYPE == 'synonym_query'
+        run: python synonyms_query_automation/run_synonym_similarity_automation.py
+
+      - name: Save semantic output with trial name
+        if: env.AUTOMATION_TYPE == 'semantic_query'
         run: |
           mkdir -p semantic_query_automation/results
-          mv semantic_query_automation/benchmark_final_actual_results.json semantic_query_automation/results/benchmark_final_actual_results${{ github.event.inputs.trial_no || 'T1' }}.json
+          mv semantic_query_automation/benchmark_final_actual_results.json semantic_query_automation/results/benchmark_final_actual_results${TRIAL_NO}.json
 
-      - name: Upload result artifacts
-        if: always()
+      - name: Save synonym output with trial name
+        if: env.AUTOMATION_TYPE == 'synonym_query'
+        run: |
+          mkdir -p synonyms_query_automation/results
+          mv synonyms_query_automation/synonym_similarity_results.json synonyms_query_automation/results/synonym_similarity_results${TRIAL_NO}.json
+          mv synonyms_query_automation/synonym_similarity_dashboard.html synonyms_query_automation/results/synonym_similarity_dashboard${TRIAL_NO}.html
+
+      - name: Upload semantic query artifacts
+        if: always() && env.AUTOMATION_TYPE == 'semantic_query'
         uses: actions/upload-artifact@v4
         with:
           name: semantic-query-results-${{ github.run_number }}
-          path: semantic_query_automation/results/*.json
+          path: |
+            semantic_query_automation/results/*.json
+            semantic_query_automation/results/*.html
+          if-no-files-found: error
+
+      - name: Upload synonym query artifacts
+        if: always() && env.AUTOMATION_TYPE == 'synonym_query'
+        uses: actions/upload-artifact@v4
+        with:
+          name: synonym-query-results-${{ github.run_number }}
+          path: |
+            synonyms_query_automation/results/*.json
+            synonyms_query_automation/results/*.html
           if-no-files-found: error
