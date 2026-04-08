@@ -24,7 +24,7 @@ jobs:
     timeout-minutes: 90
 
     env:
-      BASE_URL: ${{ secrets.BASE_URL }}
+      BASE_URL: ${{ secrets.BASE_URL || 'https://search-api-wurthbaer-qa.search-villvay.workers.dev/search' }}
       AUTOMATION_TYPE: ${{ github.event.inputs.automation_type || 'semantic_query' }}
       TRIAL_NO: ${{ github.event.inputs.trial_no || 'T1' }}
 
