@@ -211,33 +211,53 @@ def generate_dashboard_html(payload: dict) -> str:
     }});
 
     const tbody = document.querySelector("#tbl tbody");
-    const expanded = [];
     rows.forEach(r => {{
-      (r.synonym_comparisons || []).forEach(c => {{
-        expanded.push({{
-          query: r.query,
-          synonym: c.synonym,
-          similarity: c.similarity.similarity_percent,
-          overlap: c.similarity.overlap_count,
-          baseCoverage: c.similarity.base_coverage_percent,
-          synCoverage: c.similarity.synonym_coverage_percent
-        }});
-      }});
-    }});
-    expanded.sort((a, b) => b.similarity - a.similarity);
+      const comparisons = r.synonym_comparisons || [];
+      if (!comparisons.length) {{
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${{r.query}}</td>
+          <td>-</td>
+          <td>0</td>
+          <td><div class="bar-wrap"><div class="bar" style="width:0%"></div></div></td>
+          <td>0</td>
+          <td>0</td>
+          <td>0</td>
+        `;
+        tbody.appendChild(tr);
+        return;
+      }}
 
-    expanded.forEach(x => {{
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${{x.query}}</td>
-        <td>${{x.synonym}}</td>
-        <td>${{x.similarity}}</td>
-        <td><div class="bar-wrap"><div class="bar" style="width:${{Math.max(0, Math.min(100, x.similarity))}}%"></div></div></td>
-        <td>${{x.overlap}}</td>
-        <td>${{x.baseCoverage}}</td>
-        <td>${{x.synCoverage}}</td>
-      `;
-      tbody.appendChild(tr);
+      comparisons.forEach((c, idx) => {{
+        const tr = document.createElement("tr");
+        const sim = c.similarity || {{}};
+        const similarity = sim.similarity_percent || 0;
+        const overlap = sim.overlap_count || 0;
+        const baseCoverage = sim.base_coverage_percent || 0;
+        const synCoverage = sim.synonym_coverage_percent || 0;
+
+        if (idx === 0) {{
+          tr.innerHTML = `
+            <td rowspan="${{comparisons.length}}">${{r.query}}</td>
+            <td>${{c.synonym}}</td>
+            <td>${{similarity}}</td>
+            <td><div class="bar-wrap"><div class="bar" style="width:${{Math.max(0, Math.min(100, similarity))}}%"></div></div></td>
+            <td>${{overlap}}</td>
+            <td>${{baseCoverage}}</td>
+            <td>${{synCoverage}}</td>
+          `;
+        }} else {{
+          tr.innerHTML = `
+            <td>${{c.synonym}}</td>
+            <td>${{similarity}}</td>
+            <td><div class="bar-wrap"><div class="bar" style="width:${{Math.max(0, Math.min(100, similarity))}}%"></div></div></td>
+            <td>${{overlap}}</td>
+            <td>${{baseCoverage}}</td>
+            <td>${{synCoverage}}</td>
+          `;
+        }}
+        tbody.appendChild(tr);
+      }});
     }});
   </script>
 </body>
