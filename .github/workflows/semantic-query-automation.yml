@@ -3,6 +3,14 @@ name: Query Automation Runner
 on:
   workflow_dispatch:
     inputs:
+      target_env:
+        description: "Choose environment"
+        required: true
+        default: "qa_env"
+        type: choice
+        options:
+          - qa_env
+          - uat_env
       automation_type:
         description: "Choose automation to run"
         required: true
@@ -24,7 +32,8 @@ jobs:
     timeout-minutes: 90
 
     env:
-      BASE_URL: ${{ secrets.BASE_URL || 'https://search-api-wurthbaer-qa.search-villvay.workers.dev/search' }}
+      TARGET_ENV: ${{ github.event.inputs.target_env || 'qa_env' }}
+      BASE_URL: ${{ (github.event.inputs.target_env == 'uat_env' && 'https://search-api-wurthbaer-uat.search-villvay.workers.dev/search') || 'https://search-api-wurthbaer-qa.search-villvay.workers.dev/search' }}
       AUTOMATION_TYPE: ${{ github.event.inputs.automation_type || 'semantic_query' }}
       TRIAL_NO: ${{ github.event.inputs.trial_no || 'T1' }}
 
@@ -36,6 +45,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Show selected run configuration
+        run: |
+          echo "Environment: ${TARGET_ENV}"
+          echo "Automation: ${AUTOMATION_TYPE}"
+          echo "Trial: ${TRIAL_NO}"
+          echo "BASE_URL: ${BASE_URL}"
 
       - name: Validate semantic query input JSON
         if: env.AUTOMATION_TYPE == 'semantic_query'
