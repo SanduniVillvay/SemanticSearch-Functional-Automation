@@ -19,6 +19,7 @@ on:
         options:
           - semantic_query
           - synonym_query
+          - no_product_query
       trial_no:
         description: "Trial label (e.g., T1, T2)"
         required: true
@@ -61,6 +62,10 @@ jobs:
         if: env.AUTOMATION_TYPE == 'synonym_query'
         run: python -m json.tool synonyms_query_automation/synonyms.json > /dev/null
 
+      - name: Validate no-product query input JSON
+        if: env.AUTOMATION_TYPE == 'no_product_query'
+        run: python -m json.tool minimum_noProductResult_query_Automation/minimum_should_match.json > /dev/null
+
       - name: Run semantic query automation
         if: env.AUTOMATION_TYPE == 'semantic_query'
         run: python semantic_query_automation/run_benchmark_final.py
@@ -68,6 +73,10 @@ jobs:
       - name: Run synonym query automation
         if: env.AUTOMATION_TYPE == 'synonym_query'
         run: python synonyms_query_automation/run_synonym_similarity_automation.py
+
+      - name: Run no-product query automation
+        if: env.AUTOMATION_TYPE == 'no_product_query'
+        run: python minimum_noProductResult_query_Automation/run_minimum_no_product_queries.py
 
       - name: Save semantic output with trial name
         if: env.AUTOMATION_TYPE == 'semantic_query'
@@ -81,6 +90,14 @@ jobs:
           mkdir -p synonyms_query_automation/results
           mv synonyms_query_automation/synonym_similarity_results.json synonyms_query_automation/results/synonym_similarity_results${TRIAL_NO}.json
           mv synonyms_query_automation/synonym_similarity_dashboard.html synonyms_query_automation/results/synonym_similarity_dashboard${TRIAL_NO}.html
+
+      - name: Save no-product output with trial name
+        if: env.AUTOMATION_TYPE == 'no_product_query'
+        run: |
+          mkdir -p minimum_noProductResult_query_Automation/results
+          mv minimum_noProductResult_query_Automation/minimum_should_match_results.csv minimum_noProductResult_query_Automation/results/minimum_should_match_results${TRIAL_NO}.csv
+          mv minimum_noProductResult_query_Automation/minimum_should_match_results.json minimum_noProductResult_query_Automation/results/minimum_should_match_results${TRIAL_NO}.json
+          mv minimum_noProductResult_query_Automation/minimum_should_match_dashboard.html minimum_noProductResult_query_Automation/results/minimum_should_match_dashboard${TRIAL_NO}.html
 
       - name: Upload semantic query artifacts
         if: always() && env.AUTOMATION_TYPE == 'semantic_query'
@@ -100,4 +117,15 @@ jobs:
           path: |
             synonyms_query_automation/results/*.json
             synonyms_query_automation/results/*.html
+          if-no-files-found: error
+
+      - name: Upload no-product query artifacts
+        if: always() && env.AUTOMATION_TYPE == 'no_product_query'
+        uses: actions/upload-artifact@v4
+        with:
+          name: no-product-query-results-${{ github.run_number }}
+          path: |
+            minimum_noProductResult_query_Automation/results/*.csv
+            minimum_noProductResult_query_Automation/results/*.json
+            minimum_noProductResult_query_Automation/results/*.html
           if-no-files-found: error
