@@ -146,8 +146,28 @@ def compare_similarity(base_titles: list[str], synonym_titles: list[str], top_k:
 def generate_dashboard_html(payload: dict) -> str:
     rows = payload.get("results") or []
     overall = payload.get("summary") or {}
-    rows_json = json.dumps(rows, ensure_ascii=False)
-    overall_json = json.dumps(overall, ensure_ascii=False)
+    compact_rows: list[dict] = []
+    for row in rows:
+        query = str(row.get("query") or "")
+        comparisons = row.get("synonym_comparisons") or []
+        compact_comparisons: list[dict] = []
+        for comp in comparisons:
+            sim = comp.get("similarity") or {}
+            compact_comparisons.append(
+                {
+                    "synonym": str(comp.get("synonym") or ""),
+                    "similarity": {
+                        "similarity_percent": float(sim.get("similarity_percent") or 0.0),
+                        "overlap_count": int(sim.get("overlap_count") or 0),
+                        "base_coverage_percent": float(sim.get("base_coverage_percent") or 0.0),
+                        "synonym_coverage_percent": float(sim.get("synonym_coverage_percent") or 0.0),
+                    },
+                }
+            )
+        compact_rows.append({"query": query, "synonym_comparisons": compact_comparisons})
+
+    rows_json = json.dumps(compact_rows, ensure_ascii=False).replace("</", "<\\/")
+    overall_json = json.dumps(overall, ensure_ascii=False).replace("</", "<\\/")
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -160,11 +180,16 @@ def generate_dashboard_html(payload: dict) -> str:
     .meta {{ margin-bottom: 20px; }}
     .cards {{ display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }}
     .card {{ border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px; min-width: 180px; }}
+    .tabs {{ margin: 8px 0 12px; }}
+    .tabs button {{ margin-right: 8px; padding: 8px 10px; border: 1px solid #bbb; background: #f5f5f5; border-radius: 6px; cursor: pointer; }}
+    .tabs button.active {{ background: #111; color: #fff; border-color: #111; }}
     table {{ width: 100%; border-collapse: collapse; margin-top: 8px; }}
     th, td {{ border: 1px solid #ddd; padding: 6px 8px; text-align: left; font-size: 13px; }}
     th {{ background: #f6f6f6; }}
     .bar-wrap {{ width: 180px; background: #eee; border-radius: 6px; overflow: hidden; }}
     .bar {{ height: 14px; background: #4f46e5; }}
+    .pass {{ color: #047857; font-weight: 700; }}
+    .fail {{ color: #b91c1c; font-weight: 700; }}
   </style>
 </head>
 <body>
@@ -172,12 +197,22 @@ def generate_dashboard_html(payload: dict) -> str:
   <div class="meta" id="meta"></div>
   <div class="cards" id="cards"></div>
   <h2>Per Synonym Comparison</h2>
+  <div class="tabs">
+    <button id="btnAll" class="active">All</button>
+    <button id="btnPass">Pass (>=50%)</button>
+    <button id="btnFail">Fail (&lt;50%)</button>
+  </div>
+  <div class="tabs">
+    <button id="btnDownloadPass">Download Pass Table</button>
+    <button id="btnDownloadFail">Download Fail Table</button>
+  </div>
   <table id="tbl">
     <thead>
       <tr>
         <th>Query</th>
         <th>Synonym</th>
         <th>Similarity %</th>
+        <th>Status</th>
         <th>Visual</th>
         <th>Overlap</th>
         <th>Base Coverage %</th>
@@ -190,14 +225,27 @@ def generate_dashboard_html(payload: dict) -> str:
   <script>
     const rows = {rows_json};
     const summary = {overall_json};
+    const PASS_THRESHOLD = 50;
 
     document.getElementById("meta").innerText =
       "Source: " + (summary.source_file || "") + " | API: " + (summary.api_base || "");
 
     const cards = document.getElementById("cards");
+    let allComparisons = 0;
+    let passComparisons = 0;
+    rows.forEach(r => {{
+      (r.synonym_comparisons || []).forEach(c => {{
+        allComparisons += 1;
+        const sim = (c.similarity || {{}}).similarity_percent || 0;
+        if (sim >= PASS_THRESHOLD) passComparisons += 1;
+      }});
+    }});
+    const failComparisons = allComparisons - passComparisons;
     const cardData = [
       ["Total Queries", summary.total_queries || 0],
       ["Total Synonyms Compared", summary.total_synonym_comparisons || 0],
+      ["Pass (>=50%)", passComparisons],
+      ["Fail (<50%)", failComparisons],
       ["Average Similarity %", summary.average_similarity_percent || 0],
       ["Median Similarity %", summary.median_similarity_percent || 0],
       ["Min Similarity %", summary.min_similarity_percent || 0],
@@ -211,54 +259,137 @@ def generate_dashboard_html(payload: dict) -> str:
     }});
 
     const tbody = document.querySelector("#tbl tbody");
-    rows.forEach(r => {{
-      const comparisons = r.synonym_comparisons || [];
-      if (!comparisons.length) {{
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${{r.query}}</td>
-          <td>-</td>
-          <td>0</td>
-          <td><div class="bar-wrap"><div class="bar" style="width:0%"></div></div></td>
-          <td>0</td>
-          <td>0</td>
-          <td>0</td>
-        `;
-        tbody.appendChild(tr);
-        return;
-      }}
+    const btnAll = document.getElementById("btnAll");
+    const btnPass = document.getElementById("btnPass");
+    const btnFail = document.getElementById("btnFail");
+    const btnDownloadPass = document.getElementById("btnDownloadPass");
+    const btnDownloadFail = document.getElementById("btnDownloadFail");
 
-      comparisons.forEach((c, idx) => {{
-        const tr = document.createElement("tr");
+    const flatRows = [];
+    rows.forEach(r => {{
+      (r.synonym_comparisons || []).forEach(c => {{
         const sim = c.similarity || {{}};
         const similarity = sim.similarity_percent || 0;
-        const overlap = sim.overlap_count || 0;
-        const baseCoverage = sim.base_coverage_percent || 0;
-        const synCoverage = sim.synonym_coverage_percent || 0;
-
-        if (idx === 0) {{
-          tr.innerHTML = `
-            <td rowspan="${{comparisons.length}}">${{r.query}}</td>
-            <td>${{c.synonym}}</td>
-            <td>${{similarity}}</td>
-            <td><div class="bar-wrap"><div class="bar" style="width:${{Math.max(0, Math.min(100, similarity))}}%"></div></div></td>
-            <td>${{overlap}}</td>
-            <td>${{baseCoverage}}</td>
-            <td>${{synCoverage}}</td>
-          `;
-        }} else {{
-          tr.innerHTML = `
-            <td>${{c.synonym}}</td>
-            <td>${{similarity}}</td>
-            <td><div class="bar-wrap"><div class="bar" style="width:${{Math.max(0, Math.min(100, similarity))}}%"></div></div></td>
-            <td>${{overlap}}</td>
-            <td>${{baseCoverage}}</td>
-            <td>${{synCoverage}}</td>
-          `;
-        }}
-        tbody.appendChild(tr);
+        flatRows.push({{
+          query: r.query || "",
+          synonym: c.synonym || "",
+          similarity: similarity,
+          status: similarity >= PASS_THRESHOLD ? "PASS" : "FAIL",
+          overlap: sim.overlap_count || 0,
+          baseCoverage: sim.base_coverage_percent || 0,
+          synCoverage: sim.synonym_coverage_percent || 0
+        }});
       }});
     }});
+
+    function csvEscape(v) {{
+      const s = String(v ?? "");
+      if (s.includes(',') || s.includes('\\n') || s.includes('"')) {{
+        return '"' + s.replace(/"/g, '""') + '"';
+      }}
+      return s;
+    }}
+
+    function downloadTableCsv(filename, list) {{
+      const headers = [
+        "query",
+        "synonym",
+        "similarity_percent",
+        "status",
+        "overlap_count",
+        "base_coverage_percent",
+        "synonym_coverage_percent"
+      ];
+      const lines = [headers.join(",")];
+      list.forEach(r => {{
+        lines.push([
+          csvEscape(r.query),
+          csvEscape(r.synonym),
+          csvEscape(r.similarity),
+          csvEscape(r.status),
+          csvEscape(r.overlap),
+          csvEscape(r.baseCoverage),
+          csvEscape(r.synCoverage)
+        ].join(","));
+      }});
+      const blob = new Blob([lines.join("\\n")], {{ type: "text/csv;charset=utf-8;" }});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }}
+
+    function activate(btn) {{
+      [btnAll, btnPass, btnFail].forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    }}
+
+    function render(mode) {{
+      tbody.innerHTML = "";
+      rows.forEach(r => {{
+        const all = r.synonym_comparisons || [];
+        const filtered = all.filter(c => {{
+          const sim = (c.similarity || {{}}).similarity_percent || 0;
+          if (mode === "pass") return sim >= PASS_THRESHOLD;
+          if (mode === "fail") return sim < PASS_THRESHOLD;
+          return true;
+        }});
+
+        if (!filtered.length) return;
+        filtered.forEach((c, idx) => {{
+          const tr = document.createElement("tr");
+          const sim = c.similarity || {{}};
+          const similarity = sim.similarity_percent || 0;
+          const overlap = sim.overlap_count || 0;
+          const baseCoverage = sim.base_coverage_percent || 0;
+          const synCoverage = sim.synonym_coverage_percent || 0;
+          const status = similarity >= PASS_THRESHOLD
+            ? "<span class='pass'>PASS</span>"
+            : "<span class='fail'>FAIL</span>";
+
+          if (idx === 0) {{
+            tr.innerHTML = `
+              <td rowspan="${{filtered.length}}">${{r.query}}</td>
+              <td>${{c.synonym}}</td>
+              <td>${{similarity}}</td>
+              <td>${{status}}</td>
+              <td><div class="bar-wrap"><div class="bar" style="width:${{Math.max(0, Math.min(100, similarity))}}%"></div></div></td>
+              <td>${{overlap}}</td>
+              <td>${{baseCoverage}}</td>
+              <td>${{synCoverage}}</td>
+            `;
+          }} else {{
+            tr.innerHTML = `
+              <td>${{c.synonym}}</td>
+              <td>${{similarity}}</td>
+              <td>${{status}}</td>
+              <td><div class="bar-wrap"><div class="bar" style="width:${{Math.max(0, Math.min(100, similarity))}}%"></div></div></td>
+              <td>${{overlap}}</td>
+              <td>${{baseCoverage}}</td>
+              <td>${{synCoverage}}</td>
+            `;
+          }}
+          tbody.appendChild(tr);
+        }});
+      }});
+    }}
+
+    btnAll.onclick = () => {{ activate(btnAll); render("all"); }};
+    btnPass.onclick = () => {{ activate(btnPass); render("pass"); }};
+    btnFail.onclick = () => {{ activate(btnFail); render("fail"); }};
+    btnDownloadPass.onclick = () => {{
+      const passRows = flatRows.filter(r => r.status === "PASS");
+      downloadTableCsv("synonym_pass_table.csv", passRows);
+    }};
+    btnDownloadFail.onclick = () => {{
+      const failRows = flatRows.filter(r => r.status === "FAIL");
+      downloadTableCsv("synonym_fail_table.csv", failRows);
+    }};
+    render("all");
   </script>
 </body>
 </html>
